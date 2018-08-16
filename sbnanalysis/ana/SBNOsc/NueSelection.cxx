@@ -31,6 +31,7 @@ NueSelection::NueSelection() : SelectionBase(), fEventCounter(0), fNuCount(0){}
 void NueSelection::Initialize(Json::Value* config) {
 
   fDiffLength = new TH1D ("diff_length","",200,0,200);
+  fMatchedNuHist = new TH1D("matched_nu_hist","",60,0,6);
 
   // Load configuration parameters
   fTruthTag = { "generator" };
@@ -53,6 +54,7 @@ void NueSelection::Initialize(Json::Value* config) {
 void NueSelection::Finalize() {
   fOutputFile->cd();
   fDiffLength->Write();
+  fMatchedNuHist->Write();
 }
 
 
@@ -99,7 +101,9 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     Event::Interaction interaction;
     auto const& mctruth = mctruths.at(i);
     const simb::MCNeutrino& nu = mctruth.GetNeutrino();
+    auto nu_E = nu.Nu().E();
     if (matchedness[i]==true) {
+      fMatchedNuHist->Fill(nu_E);
       Event::Interaction interaction = TruthReco(mctruth);
       reco.push_back(interaction);
     }
