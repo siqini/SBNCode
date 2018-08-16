@@ -32,7 +32,7 @@ void NueSelection::Initialize(Json::Value* config) {
 
   fDiffLength = new TH1D ("diff_length","",200,0,200);
   fMatchedNuHist = new TH1D("matched_nu_hist","",60,0,6);
-  fShowerEvDiffLength = new TH2D("shower_e_v_diff_length",200,0,200,100,0,10);
+  fShowerEvDiffLength = new TH2D("shower_e_v_diff_length","",200,0,200,100,0,10);
 
   // Load configuration parameters
   fTruthTag = { "generator" };
