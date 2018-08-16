@@ -141,8 +141,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     auto vx = nu.Nu().Vx();
     auto vy = nu.Nu().Vy();
     auto vz = nu.Nu().Vz();
-    bool IsFid = (((-174.15 < vx && vx < -27.65) || (27.65 < vx && vx < 174.15)) && (-175 < vy && vy < 175) && (25 < vz && vz < 475));
-    if (matchedness[i]&&IsFid) {
+    if (matchedness[i]) {
       fSelectedNueHist->Fill(nu_E);
       Event::Interaction interaction = TruthReco(mctruth);
       reco.push_back(interaction);
