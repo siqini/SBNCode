@@ -32,6 +32,7 @@ void NueSelection::Initialize(Json::Value* config) {
 
   fDiffLength = new TH1D ("diff_length","",200,0,200);
   fMatchedNuHist = new TH1D("matched_nu_hist","",60,0,6);
+  fShowerEvDiffLength = new TH2D("shower_e_v_diff_length",200,0,200,100,0,10);
 
   // Load configuration parameters
   fTruthTag = { "generator" };
@@ -55,6 +56,7 @@ void NueSelection::Finalize() {
   fOutputFile->cd();
   fDiffLength->Write();
   fMatchedNuHist->Write();
+  fShowerEvDiffLength->Write();
 }
 
 
@@ -85,8 +87,10 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     for (size_t j=0;j<mcshowers.size();j++) {
       auto const& mcshower = mcshowers.at(j);
       auto shower_pos = mcshower.DetProfile().Position();
+      auto shower_E = mcshower.DetProfile().E();
       double distance = (nu_pos.Vect()-shower_pos.Vect()).Mag();
       fDiffLength->Fill(distance);
+      fShowerEvDiffLength->Fill(distance,shower_E);
       if (distance <= 5.) {
         matched_shower_count++;
       }
