@@ -88,7 +88,7 @@ void NueSelection::Initialize(Json::Value* config) {
   AddBranch("energy_threshold",&fEnergyThreshold);
   AddBranch("nucount",&fNuCount);
   AddBranch("vertex_association_distance_uppper_bound",&fVertexAssnDis);
-  AddBranch("de_dx_upp".&fDEDXUPP);
+  AddBranch("de_dx_upp",&fDEDXUPP);
 
 
   hello();
