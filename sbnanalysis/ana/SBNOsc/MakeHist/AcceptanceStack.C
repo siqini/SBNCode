@@ -14,7 +14,7 @@ void AcceptanceStack (){
     return;
   } //if the file is not correctly opened, spit out an error message
 
-  TCanvas *acceptance = new TCanvas("acceptance","acceptance plots",900,700);
+  TCanvas *acceptance = new TCanvas("acceptance","acceptance plots",600,800);
   acceptance->Divide(2,0);
   TH1D *gen_nuhist = (TH1D*)myFile->Get("generated_nue_hist");
   TH1D *gen_nuhist_fidvol = (TH1D*) myFile->Get("generated_nue_in_fiducial_volume");
@@ -71,7 +71,7 @@ void AcceptanceStack (){
   acceptance->cd(1);
   nustack->SetTitle("Generated and recontructed #nu_e after cuts; Neutrino energy (GeV);# Events ");
   nustack->Draw("nostack");
-  auto legend = new TLegend(0.1,0.7,0.48,0.9);
+  auto legend = new TLegend(0.5,0.6,0.98,0.9);
   //legend->AddEntry(gen_nuhist, "Generated #nu_e");
   legend->AddEntry(gen_nuhist_fidvol, "Generated #nu_e after fiducial volume selection");
   legend->AddEntry(shower_fid,"+ >200MeV shower energy selection");
@@ -97,7 +97,7 @@ void AcceptanceStack (){
   nustack->Add(shower_fid_track_cg_reco);
   nustack->SetTitle("Generated and recontructed #nu_e after cuts; Neutrino energy (GeV);# Events ");
   nustack->Draw("nostack");
-  auto legend_full = new TLegend(0.1,0.7,0.48,0.9);
+  auto legend_full = new TLegend(0.5,0.6,0.98,0.9);
   legend_full->AddEntry(gen_nuhist, "Generated #nu_e");
   legend_full->AddEntry(gen_nuhist_fidvol, "Generated #nu_e after fiducial volume selection");
   legend_full->AddEntry(shower_fid,"+ >200MeV shower energy selection");
