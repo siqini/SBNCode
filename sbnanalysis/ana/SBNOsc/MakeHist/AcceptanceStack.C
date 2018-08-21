@@ -13,6 +13,9 @@ void AcceptanceStack (){
     printf("File not correctly opened!\n");
     return;
   } //if the file is not correctly opened, spit out an error message
+
+  TCanvas *acceptance = new TCanvas("acceptance","acceptance plots",900,700);
+  acceptance->Divide(2,0);
   TH1D *gen_nuhist = (TH1D*)myFile->Get("generated_nue_hist");
   TH1D *gen_nuhist_fidvol = (TH1D*) myFile->Get("generated_nue_in_fiducial_volume");
   TH1D *shower_fid = (TH1D*)myFile->Get("shower_cut_fid_only_nu_energy");
@@ -65,7 +68,7 @@ void AcceptanceStack (){
 
 
   //nustack->Draw("nostack");
-
+  acceptance->cd(1);
   nustack->SetTitle("Generated and recontructed #nu_e after cuts; Neutrino energy (GeV);# Events ");
   nustack->Draw("nostack");
   auto legend = new TLegend(0.1,0.7,0.48,0.9);
@@ -82,6 +85,27 @@ void AcceptanceStack (){
   //nustack->GetYaxis()->SetTitle("# Events");
 
   //c-> Modified();
+
+  acceptance->cd(2);
+  THStack *nustack_full = new THStack("nustack_full","Generated and reconstructed #nu_e after cuts");
+  nustack->Add(gen_nuhist);
+  nustack->Add(gen_nuhist_fidvol);
+  nustack->Add(shower_fid);
+  nustack->Add(shower_fid_track);
+  nustack->Add(nodedx);
+  nustack->Add(shower_fid_track_cg);
+  nustack->Add(shower_fid_track_cg_reco);
+  nustack->SetTitle("Generated and recontructed #nu_e after cuts; Neutrino energy (GeV);# Events ");
+  nustack->Draw("nostack");
+  auto legend_full = new TLegend(0.1,0.7,0.48,0.9);
+  legend_full->AddEntry(gen_nuhist, "Generated #nu_e");
+  legend_full->AddEntry(gen_nuhist_fidvol, "Generated #nu_e after fiducial volume selection");
+  legend_full->AddEntry(shower_fid,"+ >200MeV shower energy selection");
+  legend_full->AddEntry(shower_fid_track, "+ < 1m track length selction");
+  legend_full->AddEntry(nodedx, "+ conversion gap cut");
+  legend_full->AddEntry(shower_fid_track_cg, "+ shower dEdx cut");
+  legend_full->AddEntry(shower_fid_track_cg_reco, "+ 0.8 reco efficiency");
+  legend_full->Draw();
 
 
 
