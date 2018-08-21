@@ -71,6 +71,7 @@ void NueSelection::Initialize(Json::Value* config) {
   fEnergyThreshold =0.;
   fVertexAssnDis=0.;
   fNuCount=0;
+  fDEDXUPP = 0.;
   fTruthTag = { "generator" };
   fTrackTag = { "mcreco" };
   fShowerTag = { "mcreco" };
@@ -79,6 +80,7 @@ void NueSelection::Initialize(Json::Value* config) {
     fEnergyThreshold = (*config)["SBNOsc"].get("energy_threshold",123.0).asDouble();
     fVertexAssnDis = (*config)["SBNOsc"].get("another",1.0).asDouble();
     //fEnergyThreshold = { (*config)["SBNOsc"].get("energy_threshold",12.34).asDouble() };
+    fDEDXUPP = (*config)["SBNOsc"].get("de_dx_upp",1.0).asDouble();
     fTruthTag = { (*config)["SBNOsc"].get("MCTruthTag", "generator").asString() };
     fTrackTag = { (*config)["SBNOsc"].get("MCTrackTag", "mcreco").asString() };
     fShowerTag = { (*config)["SBNOsc"].get("MCShowerTag","mcreco").asString() };
@@ -86,6 +88,7 @@ void NueSelection::Initialize(Json::Value* config) {
   AddBranch("energy_threshold",&fEnergyThreshold);
   AddBranch("nucount",&fNuCount);
   AddBranch("vertex_association_distance_uppper_bound",&fVertexAssnDis);
+  AddBranch("de_dx_upp".&fDEDXUPP);
 
 
   hello();
@@ -209,7 +212,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     double shower_E = mcshower.DetProfile().E();
     //fill in the dEdx hist
     double shower_dEdx = mcshower.dEdx();
-    bool dEdxQuality = (shower_dEdx<=1.5);
+    bool dEdxQuality = (shower_dEdx<= fDEDXUPP );
     HasGooddEdx.push_back(dEdxQuality);
     int showerPDG = mcshower.PdgCode();
     fShowerdEdx->Fill(shower_dEdx);

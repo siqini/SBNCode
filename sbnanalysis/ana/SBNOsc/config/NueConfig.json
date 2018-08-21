@@ -3,5 +3,6 @@
   "SBNOsc": {
     "energy_threshold": 200.0,
     "vertex_assn_dis_uppper_bnd": 5.0,
+    "de_dx_upp":1.5,
   }
 }

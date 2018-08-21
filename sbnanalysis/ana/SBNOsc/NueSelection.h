@@ -91,6 +91,7 @@ protected:
   art::InputTag fShowerTag; //! <art tag for MCShower information
   double fEnergyThreshold; //configurable parameter
   double fVertexAssnDis;
+  double fDEDXUPP;
 };
 
   }  // namespace SBNOsc
