@@ -41,6 +41,7 @@ void NueSelection::Initialize(Json::Value* config) {
   fGenNueFidVolHist = new TH1D ("generated_nue_in_fiducial_volume","",60,0,6);
   fSelectedNuHist = new TH1D ("selected_nu_hist","",60,0,6);
   fNodEdxNuHist = new TH1D ("no_dEdx","",60,0,6);
+  fNoSecondPhotonHist = new ("no_second_photon","",60,0,6);
 
   fShowerEnergy = new TH1D ("shower_energy","",1000,0,1000);
   fEnergeticShowerHist = new TH1D("energetic_shower_energy","",1000,0,100);
@@ -107,6 +108,7 @@ void NueSelection::Finalize() {
   fShowerCutSelectionHist->Write();
   fSelectedTrueNue->Write();
   fNodEdxNuHist->Write();
+  fNoSecondPhotonHist->Write();
 
   fMuShowerSelectedNu->Write();
   fEShowerSelectedNu->Write();
@@ -236,6 +238,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
 
   // Iterate through the neutrinos
   std::vector<bool> AssnShowerGooddEdx;
+  std::vector<bool> SecondPhoton;
   for (size_t i=0;i<mctruths.size();i++) {
     auto const& mctruth = mctruths.at(i);
     const simb::MCNeutrino& nu = mctruth.GetNeutrino();
@@ -251,6 +254,16 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     if ((nu.Nu().PdgCode() ==12)&&(((-174.15 < vx && vx < -27.65) || (27.65 < vx && vx < 174.15)) && (-175 < vy && vy < 175) && (25 < vz && vz < 475))) fGenNueFidVolHist->Fill(nu_E);
     auto nu_pos = nu.Nu().Position();
     int matched_shower_count = 0;
+    int photon_shower_candidate = 0;
+    for (int j=0;j<mcshowers.size();j++) {
+      auto const& mcshower = mcshowers.at(j);
+      auto shower_pos = shower.DetProfile().Position();
+      double dis = (nu_pos.Vect()-shower_pos.Vect()).Mag();
+      double shower_E = mcshower.DetProfile().E();
+      if ((shower_E>=100)&&(dis<=5)) photon_shower_candidate++;
+    }
+    bool HasSecondPhoton = (photon_shower_candidate>1);
+    SecondPhoton.push_back(!HasSecondPhoton);
     std::vector<int> assn_showers_pdg;
     std::vector<bool> assn_showers_quality; //dEdx
     // loop through only energetic showers
@@ -300,7 +313,8 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     if (matchedness[i]&&IsFid) fShowerCutSelectionHist->Fill(nu_E);
     if (matchedness[i]&&IsFid&&NotMuTrackness) fSelectedNuHist->Fill(nu_E);
     if (matchedness[i]&&IsFid&&NotMuTrackness&&PassConversionGap[i]) fNodEdxNuHist->Fill(nu_E);
-    if (matchedness[i]&&IsFid&&NotMuTrackness&&PassConversionGap[i]&&AssnShowerGooddEdx[i]) {
+    if (matchedness[i]&&IsFid&&NotMuTrackness&&PassConversionGap[i]&&AssnShowerGooddEdx[i]) fNoSecondPhotonHist->Fill(nu_E);
+    if (matchedness[i]&&IsFid&&NotMuTrackness&&PassConversionGap[i]&&AssnShowerGooddEdx[i]&&SecondPhoton[i]) {
       fCGSelectionHist->Fill(nu_E);
       if (nu.Nu().PdgCode() ==12) fSelectedTrueNue->Fill(nu_E);
 

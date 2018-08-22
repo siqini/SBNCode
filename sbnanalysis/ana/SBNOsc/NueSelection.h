@@ -67,6 +67,7 @@ protected:
   TH1D* fEnergeticShowerHist;
   TH1D* fVisibleVertexNuEHist;
   TH1D* fNodEdxNuHist;
+  TH1D* fNoSecondPhotonHist;
   TH1D* fCGSelectionHist;
   TH1D* fRecoSelectionHist;
   TH1D* fShowerCutSelectionHist;
