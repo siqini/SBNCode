@@ -257,7 +257,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     int photon_shower_candidate = 0;
     for (int j=0;j<mcshowers.size();j++) {
       auto const& mcshower = mcshowers.at(j);
-      auto shower_pos = shower.DetProfile().Position();
+      auto shower_pos = mcshower.DetProfile().Position();
       double dis = (nu_pos.Vect()-shower_pos.Vect()).Mag();
       double shower_E = mcshower.DetProfile().E();
       if ((shower_E>=100)&&(dis<=5)) photon_shower_candidate++;
