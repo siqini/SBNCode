@@ -41,7 +41,7 @@ void NueSelection::Initialize(Json::Value* config) {
   fGenNueFidVolHist = new TH1D ("generated_nue_in_fiducial_volume","",60,0,6);
   fSelectedNuHist = new TH1D ("selected_nu_hist","",60,0,6);
   fNodEdxNuHist = new TH1D ("no_dEdx","",60,0,6);
-  fNoSecondPhotonHist = new ("no_second_photon","",60,0,6);
+  fNoSecondPhotonHist = new TH1D ("no_second_photon","",60,0,6);
 
   fShowerEnergy = new TH1D ("shower_energy","",1000,0,1000);
   fEnergeticShowerHist = new TH1D("energetic_shower_energy","",1000,0,100);
