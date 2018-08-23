@@ -159,7 +159,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     auto startpos = mctrack.Start().Position();
     auto endpos = mctrack.End().Position();
     auto length = (startpos.Vect()-endpos.Vect()).Mag();
-    if (pdg==11) fETrackLength->Fill(length);
+    if (pdg==13) fETrackLength->Fill(length);
 
   }
 
