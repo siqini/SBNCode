@@ -293,7 +293,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     if (matched_shower_count>0) {
       matchedness.push_back(true);
       matched_shower_energy = assn_shower_e[0];
-      fEnuEe->Fill(matched_shower_energy,nu_E);
+      fEnuEe->Fill(matched_shower_energy,nu_E*1000.);
     }
     else matchedness.push_back(false);
   }
