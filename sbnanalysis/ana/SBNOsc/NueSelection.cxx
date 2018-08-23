@@ -65,6 +65,8 @@ void NueSelection::Initialize(Json::Value* config) {
   fPositronShowerdEdx = new TH1D("positron_shower_dEdx","",60,0,6);
   fOtherShowerdEdx = new TH1D("other_shower_dEdx","",60,0,6);
 
+  fEnuEeHist = new TH2D("enu_ee_hist","",6000,0,6000,6000,0,6000);
+
 
 
 
@@ -126,6 +128,8 @@ void NueSelection::Finalize() {
   fGenBarNueHist->Write();
   fGenNumuHist->Write();
   fGenOtherHist->Write();
+
+  fEnuEeHist->Write();
 }
 
 
@@ -239,10 +243,12 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
   // Iterate through the neutrinos
   std::vector<bool> AssnShowerGooddEdx;
   std::vector<bool> SecondPhoton;
+  std::vector<double> AssnShowerE;
   for (size_t i=0;i<mctruths.size();i++) {
     auto const& mctruth = mctruths.at(i);
     const simb::MCNeutrino& nu = mctruth.GetNeutrino();
     auto nu_E = nu.Nu().E();
+    std::vector<double> thisassnshowere;
     fGenHist->Fill(nu_E);
     if (nu.Nu().PdgCode() == 12) fGenNueHist->Fill(nu_E);
     if (nu.Nu().PdgCode() == 14) fGenNumuHist->Fill(nu_E);
@@ -267,18 +273,24 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     std::vector<int> assn_showers_pdg;
     std::vector<bool> assn_showers_quality; //dEdx
     // loop through only energetic showers
-    for (auto j : EnergeticShowersIndices) {
+    for (int j=0;i<mcshowers.size();j++) {
       auto const& shower = mcshowers.at(j);
       auto shower_pos = shower.DetProfile().Position();
       double distance = (nu_pos.Vect()-shower_pos.Vect()).Mag();
+      double shower_e = shower.DetProfile().E();
       fDiffLength->Fill(distance);
       if (distance <= 5.) {
         matched_shower_count++;
+        thisassnshowere.push_back(shower_e);
         assn_showers_pdg.push_back(shower.PdgCode());
         assn_showers_quality.push_back(HasGooddEdx[j]);
       }
     }
-    if (!assn_showers_pdg.empty()) ShowerPDG.push_back(assn_showers_pdg[0]);
+    if (!assn_showers_pdg.empty()) {
+      ShowerPDG.push_back(assn_showers_pdg[0]);
+      AssnShowerE.push_back(thisassnshowere[0]);
+      fEnuEeHist->Fill(thisassnshowere[0],nu_E*1000);
+    }
     else ShowerPDG.push_back(0);
     if (!assn_showers_quality.empty()) AssnShowerGooddEdx.push_back(assn_showers_quality[0]);
     else AssnShowerGooddEdx.push_back(false);

@@ -85,6 +85,8 @@ protected:
   TH1D* fPositronShowerdEdx;
   TH1D* fOtherShowerdEdx;
 
+  TH2D* fEnuEeHist;
+
 
   /** Configuration parameters */
   art::InputTag fTruthTag;  //!< art tag for MCTruth information
