@@ -86,7 +86,8 @@ protected:
   TH1D* fOtherShowerdEdx;
 
   TH2D* fEnuEe;
-
+  TH1D* fETrackLength;
+  
   /** Configuration parameters */
   art::InputTag fTruthTag;  //!< art tag for MCTruth information
   art::InputTag fTrackTag; //! <art tag for MCTrack information

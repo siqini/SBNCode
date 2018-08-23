@@ -66,6 +66,7 @@ void NueSelection::Initialize(Json::Value* config) {
   fOtherShowerdEdx = new TH1D("other_shower_dEdx","",60,0,6);
 
   fEnuEe = new TH2D("E_nu_v_E_e","",6000,0,6000,6000,0,6000);
+  fETrackLength = new TH1D("electron_track_length","",100,0,100);
 
 
 
@@ -130,6 +131,7 @@ void NueSelection::Finalize() {
   fGenOtherHist->Write();
 
   fEnuEe->Write();
+  fETrackLength->Write();
 }
 
 
@@ -150,6 +152,18 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     *ev.getValidHandle<std::vector<sim::MCTrack> >(fTrackTag);
   auto const& mcshowers = \
     *ev.getValidHandle<std::vector<sim::MCShower> >(fShowerTag);
+
+  for (size_t i=0;i<mctracks.size();i++) {
+    auto const& mctrack = mctracks.at(i);
+    int pdg = mctrack.PdgCode();
+    auto startpos = mctrack.Start().Position();
+    auto endpos = mctrack.End().Position();
+    auto length = (startpos.Vect()-endpos.Vect()).Mag();
+    if (pdg==11) fETrackLength->Fill(length);
+
+  }
+
+
 
  //Conversion gap cut: mark visibility of vertices
  std::vector<bool> IsVisibleVertex;
