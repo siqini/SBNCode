@@ -33,7 +33,7 @@ void NueSelection::Initialize(Json::Value* config) {
   fDiffLength = new TH1D ("diff_length","",200,0,200);
   fMatchedNuHist = new TH1D("matched_nu_hist","",60,0,6);
   fShowerEvDiffLength = new TH2D("shower_e_v_diff_length","",200,0,200,100,0,10);
-
+  fEnuEeHist = new TH2D("EnuEeHist","",6000,0,6000,6000,0,6000);
   // Load configuration parameters
   fTruthTag = { "generator" };
   fTrackTag = { "mcreco" };
@@ -57,6 +57,7 @@ void NueSelection::Finalize() {
   fDiffLength->Write();
   fMatchedNuHist->Write();
   fShowerEvDiffLength->Write();
+  fEnuEeHist->Write();
 }
 
 
@@ -78,12 +79,14 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     *ev.getValidHandle<std::vector<sim::MCShower> >(fShowerTag);
 
   std::vector<bool> matchedness;
+  std::vector<double> assnee;
   // Iterate through the neutrinos
   for (size_t i=0;i<mctruths.size();i++) {
     auto const& mctruth = mctruths.at(i);
     const simb::MCNeutrino& nu = mctruth.GetNeutrino();
     auto nu_pos = nu.Nu().Position();
     int matched_shower_count = 0;
+    std::vector<double> ees;
     for (size_t j=0;j<mcshowers.size();j++) {
       auto const& mcshower = mcshowers.at(j);
       auto shower_pos = mcshower.DetProfile().Position();
@@ -93,11 +96,15 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
       fShowerEvDiffLength->Fill(distance,shower_E);
       if (distance <= 5.) {
         matched_shower_count++;
+        ees.push_back(shower_E);
       }
     }
-    if (matched_shower_count>0) matchedness.push_back(true);
+    if (matched_shower_count>0) {
+      matchedness.push_back(true);
+      assnee.push_back(ees[0]);
+    }
     else matchedness.push_back(false);
-  }
+
 
 
   // Iterate through the neutrinos/MCTruth
@@ -108,6 +115,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     auto nu_E = nu.Nu().E();
     if (matchedness[i]==true) {
       fMatchedNuHist->Fill(nu_E);
+      fEnuEeHist->Fill(assnee[i],nu_E*1000);
       Event::Interaction interaction = TruthReco(mctruth);
       reco.push_back(interaction);
     }

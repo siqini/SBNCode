@@ -57,6 +57,7 @@ protected:
   TH1D* fDiffLength;
   TH1D* fMatchedNuHist;
   TH2D* fShowerEvDiffLength;
+  TH2D* fEnuEeHist;
 
   /** Configuration parameters */
   art::InputTag fTruthTag;  //!< art tag for MCTruth information
