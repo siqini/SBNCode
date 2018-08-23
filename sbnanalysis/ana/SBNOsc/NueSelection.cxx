@@ -275,7 +275,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
       auto shower_pos = shower.DetProfile().Position();
       auto shower_E = shower.DetProfile().E();
       double distance = (nu_pos.Vect()-shower_pos.Vect()).Mag();
-      if (distan<=5.) {
+      if (distance<=5.) {
         fEnuEeHist->Fill(shower_E, nu_E*1000);
       }
     }
