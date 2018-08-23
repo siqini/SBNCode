@@ -65,6 +65,8 @@ void NueSelection::Initialize(Json::Value* config) {
   fPositronShowerdEdx = new TH1D("positron_shower_dEdx","",60,0,6);
   fOtherShowerdEdx = new TH1D("other_shower_dEdx","",60,0,6);
 
+  fEnuEe = new TH2D("E_nu_v_E_e","",6000,0,6000,6000,0,6000);
+
 
 
 
@@ -126,6 +128,8 @@ void NueSelection::Finalize() {
   fGenBarNueHist->Write();
   fGenNumuHist->Write();
   fGenOtherHist->Write();
+
+  fEnuEe->Write();
 }
 
 
@@ -266,23 +270,31 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     SecondPhoton.push_back(!HasSecondPhoton);
     std::vector<int> assn_showers_pdg;
     std::vector<bool> assn_showers_quality; //dEdx
+    std::vector<double> assn_shower_e;
+    double matched_shower_energy = 0.;
     // loop through only energetic showers
     for (auto j : EnergeticShowersIndices) {
       auto const& shower = mcshowers.at(j);
       auto shower_pos = shower.DetProfile().Position();
+      auto shower_e = shower.DetProfile().E();
       double distance = (nu_pos.Vect()-shower_pos.Vect()).Mag();
       fDiffLength->Fill(distance);
       if (distance <= 5.) {
         matched_shower_count++;
         assn_showers_pdg.push_back(shower.PdgCode());
         assn_showers_quality.push_back(HasGooddEdx[j]);
+        assn_shower_e.push_back(shower_e);
       }
     }
     if (!assn_showers_pdg.empty()) ShowerPDG.push_back(assn_showers_pdg[0]);
     else ShowerPDG.push_back(0);
     if (!assn_showers_quality.empty()) AssnShowerGooddEdx.push_back(assn_showers_quality[0]);
     else AssnShowerGooddEdx.push_back(false);
-    if (matched_shower_count>0) matchedness.push_back(true);
+    if (matched_shower_count>0) {
+      matchedness.push_back(true);
+      matched_shower_energy = assn_shower_e[0];
+      fEnuEe->Fill(matched_shower_energy,nu_E);
+    }
     else matchedness.push_back(false);
   }
   assert(ShowerPDG.size()==matchedness.size());
