@@ -65,6 +65,8 @@ void NueSelection::Initialize(Json::Value* config) {
   fPositronShowerdEdx = new TH1D("positron_shower_dEdx","",60,0,6);
   fOtherShowerdEdx = new TH1D("other_shower_dEdx","",60,0,6);
 
+  fEnuEeHist = new TH2D("enu_ee","",6000,0,6000,6000,0,6000);
+
 
 
 
@@ -126,6 +128,7 @@ void NueSelection::Finalize() {
   fGenBarNueHist->Write();
   fGenNumuHist->Write();
   fGenOtherHist->Write();
+  fEnuEeHist->Write();
 }
 
 
@@ -266,6 +269,17 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     SecondPhoton.push_back(!HasSecondPhoton);
     std::vector<int> assn_showers_pdg;
     std::vector<bool> assn_showers_quality; //dEdx
+
+    for (int j=0;j<mcshowers.size();j++) {
+      auto const& shower = mcshowers.at(j);
+      auto shower_pos = shower.DetProfile().Position();
+      auto shower_E = shower.DetProfile().E();
+      double distance = (nu_pos.Vect()-shower_pos.Vect()).Mag();
+      if (distan<=5.) {
+        fEnuEeHist->Fill(shower_E, nu_E*1000);
+      }
+    }
+
     // loop through only energetic showers
     for (auto j : EnergeticShowersIndices) {
       auto const& shower = mcshowers.at(j);
