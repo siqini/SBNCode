@@ -13,26 +13,29 @@ void AcceptanceStack (){
     printf("File not correctly opened!\n");
     return;
   } //if the file is not correctly opened, spit out an error message
-  TH1D *gen_nuhist = (TH1D*)myFile->Get("generated_nue_hist");
-  TH1D *gen_nuhist_fidvol = (TH1D*) myFile->Get("generated_nue_in_fiducial_volume");
+  //TH1D *genhist = (TH1D*)myFile->Get("generated_particles");
+  //TH1D *gen_nuhist_fidvol = (TH1D*) myFile->Get("generated_nue_in_fiducial_volume");
   TH1D *shower_fid = (TH1D*)myFile->Get("shower_cut_fid_only_nu_energy");
   TH1D *shower_fid_track = (TH1D*)myFile->Get("selected_nu_hist");
   TH1D *nodedx = (TH1D*)myFile->Get("no_dEdx");
+  TH1D *nosecondphoton = (TH1D*)myFile->Get("no_second_photon");
   TH1D *shower_fid_track_cg = (TH1D*)myFile->Get("final_selected_nu");
   TH1D *shower_fid_track_cg_reco = (TH1D*)myFile->Get("final_selected_nu_w_reco_efficiency");
 
-  double ngen =  gen_nuhist->GetEntries();
-  double ngenfid = gen_nuhist_fidvol->GetEntries();
+  //double ngen =  gen_nuhist->GetEntries();
+  //double ngenfid = gen_nuhist_fidvol->GetEntries();
   double nshowerfid = shower_fid->GetEntries();
   double nshowerfidtrack = shower_fid_track->GetEntries();
   double nnodedx = nodedx->GetEntries();
+  double nnosecondphoton = nosecondphoton->GetEntries();
   double nshowerfidtrackcg = shower_fid_track_cg->GetEntries();
   double nshowerfidtrackcgreco = shower_fid_track_cg_reco->GetEntries();
-
+  /*
   double ngenfid_rate = ngenfid/ngen;
   double nshowerfid_rate = nshowerfid/ngenfid;
   double nshowerfidtrack_rate = nshowerfidtrack/ngenfid;
   double nnodedx_rate = nnodedx/ngenfid;
+  double nnosecondphoton_rate = nnosecondphoton/ngenfid;
   double nshowerfidtrackcg_rate = nshowerfidtrackcg/ngenfid;
   double nshowerfidtrackcgreco_rate = nshowerfidtrackcgreco/ngenfid;
 
@@ -42,24 +45,26 @@ void AcceptanceStack (){
   std::cout<<"Selected nue in fid vol passing shower energy cut, track length cut, conversion gap cut/generated nue in fid vol = "<<nnodedx_rate<<std::endl;
   std::cout<<"Selected nue in fid vol passing shower energy cut, track length cut, conversion gap cut and dEdx cut/generated nue in fid vol = "<<nshowerfidtrackcg_rate<<std::endl;
   std::cout<<"Selected nue in fid vol passing shower energy cut, track length cut, conversion gap cut with reco efficiency applied/generated nue in fid vol = "<<nshowerfidtrackcgreco_rate<<std::endl;
+  */
 
 
-
-  gen_nuhist->SetFillColor(kRed);
-  gen_nuhist_fidvol->SetFillColor(kPink-6);
+  //gen_nuhist->SetFillColor(kRed);
+  //gen_nuhist_fidvol->SetFillColor(kPink-6);
   shower_fid->SetFillColor(kMagenta);
   shower_fid_track->SetFillColor(kViolet+6);
   nodedx->SetFillColor(kBlue);
+  nosecondphoton->SetFillColor(kRed);
   shower_fid_track_cg->SetFillColor(kAzure+7);
   shower_fid_track_cg_reco->SetFillColor(kSpring);
   //TCanvas *c = new TCanvas ("c", "Generated and recontructed hists",10,10,1000,800);
 
   THStack *nustack = new THStack("nustack","Generated and reconstructed #nu_e after cuts");
   //nustack->Add(gen_nuhist);
-  nustack->Add(gen_nuhist_fidvol);
+  //nustack->Add(gen_nuhist_fidvol);
   nustack->Add(shower_fid);
   nustack->Add(shower_fid_track);
   nustack->Add(nodedx);
+  nustack->Add(nosecondphoton);
   nustack->Add(shower_fid_track_cg);
   nustack->Add(shower_fid_track_cg_reco);
 
@@ -70,11 +75,12 @@ void AcceptanceStack (){
   nustack->Draw("nostack");
   auto legend = new TLegend(0.1,0.7,0.48,0.9);
   //legend->AddEntry(gen_nuhist, "Generated #nu_e");
-  legend->AddEntry(gen_nuhist_fidvol, "Generated #nu_e after fiducial volume selection");
+  //legend->AddEntry(gen_nuhist_fidvol, "Generated #nu_e after fiducial volume selection");
   legend->AddEntry(shower_fid,"+ >200MeV shower energy selection");
   legend->AddEntry(shower_fid_track, "+ < 1m track length selction");
   legend->AddEntry(nodedx, "+ conversion gap cut");
-  legend->AddEntry(shower_fid_track_cg, "+ shower dEdx cut");
+  legend->AddEntry(nosecondphoton, "+ shower dEdx cut")
+  legend->AddEntry(shower_fid_track_cg, "+ second photon cut");
   legend->AddEntry(shower_fid_track_cg_reco, "+ 0.8 reco efficiency");
   legend->Draw();
 
