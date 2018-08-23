@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <random>
-#include "core/Event.hh"
+//#include "core/Event.hh"
 #include "NueSelection.h"
 #include "Utilities.h"
 
@@ -29,7 +29,6 @@ NueSelection::NueSelection() : SelectionBase(), fEventCounter(0), fNuCount(0){}
 
 
 void NueSelection::Initialize(Json::Value* config) {
-
   fDiffLength = new TH1D ("diff_length","",200,0,200);
   fMatchedNuHist = new TH1D("matched_nu_hist","",60,0,6);
   fShowerEvDiffLength = new TH2D("shower_e_v_diff_length","",200,0,200,100,0,10);
@@ -51,7 +50,6 @@ void NueSelection::Initialize(Json::Value* config) {
   hello();
 }
 
-
 void NueSelection::Finalize() {
   fOutputFile->cd();
   fDiffLength->Write();
@@ -59,7 +57,6 @@ void NueSelection::Finalize() {
   fShowerEvDiffLength->Write();
   fEnuEeHist->Write();
 }
-
 
 
 bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Interaction>& reco) {
@@ -134,6 +131,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
   }
 
   return selected;
+
 }
 
   }  // namespace SBNOsc
