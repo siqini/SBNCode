@@ -66,7 +66,7 @@ void NueSelection::Initialize(Json::Value* config) {
   fOtherShowerdEdx = new TH1D("other_shower_dEdx","",60,0,6);
 
   fEnuEe = new TH2D("E_nu_v_E_e","",6000,0,6000,6000,0,6000);
-  fETrackLength = new TH1D("electron_track_length","",100,0,100);
+  fETrackLength = new TH1D("electron_track_length","",1000,0,1000);
 
 
 
