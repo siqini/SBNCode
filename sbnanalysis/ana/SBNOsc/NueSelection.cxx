@@ -67,6 +67,7 @@ void NueSelection::Initialize(Json::Value* config) {
 
   fEnuEe = new TH2D("E_nu_v_E_e","",6000,0,6000,6000,0,6000);
   fETrackLength = new TH1D("electron_track_length","",100,0,100);
+  fTrackType = new TH1D ("track_type","",50,0,50);
 
 
 
@@ -132,6 +133,7 @@ void NueSelection::Finalize() {
 
   fEnuEe->Write();
   fETrackLength->Write();
+  fTrackType->Write();
 }
 
 
@@ -156,6 +158,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
   for (size_t i=0;i<mctracks.size();i++) {
     auto const& mctrack = mctracks.at(i);
     int pdg = mctrack.PdgCode();
+    fTrackType->Fill(pdg);
     auto startpos = mctrack.Start().Position();
     auto endpos = mctrack.End().Position();
     auto length = (startpos.Vect()-endpos.Vect()).Mag();
