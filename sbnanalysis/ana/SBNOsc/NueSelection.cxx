@@ -65,7 +65,7 @@ void NueSelection::Initialize(Json::Value* config) {
   fPositronShowerdEdx = new TH1D("positron_shower_dEdx","",60,0,6);
   fOtherShowerdEdx = new TH1D("other_shower_dEdx","",60,0,6);
 
-  fEnuEeHist = new TH2D("enu_ee","",6000,0,6000,1000,0,1000);
+  fEnuEeHist = new TH2D("enu_ee","",1000,0,1000,1000,0,1000);
 
 
 
