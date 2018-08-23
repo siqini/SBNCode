@@ -55,43 +55,14 @@ protected:
 
 
   TH1D* fDiffLength;
-  TH1D* fTrackLength;
-  TH1D* fGenHist;
-  TH1D* fGenNumuHist;
-  TH1D* fGenBarNueHist;
-  TH1D* fGenNueHist;
-  TH1D* fGenOtherHist;
-  TH1D* fGenNueFidVolHist;
-  TH1D* fSelectedNuHist;
-  TH1D* fShowerEnergy;
-  TH1D* fEnergeticShowerHist;
-  TH1D* fVisibleVertexNuEHist;
-  TH1D* fNodEdxNuHist;
-  TH1D* fNoSecondPhotonHist;
-  TH1D* fCGSelectionHist;
-  TH1D* fRecoSelectionHist;
-  TH1D* fShowerCutSelectionHist;
-  TH1D* fSelectedTrueNue;
-
-  //shower true type
-  TH1D* fMuShowerSelectedNu;
-  TH1D* fEShowerSelectedNu;
-  TH1D* fGammaShowerSelectedNu;
-  TH1D* fOtherShowerSelectedNu;
-  TH1D* fShowerdEdx;
-  TH1D* fEShowerdEdx;
-  TH1D* fGammaShowerdEdx;
-  TH1D* fMuShowerdEdx;
-  TH1D* fPositronShowerdEdx;
-  TH1D* fOtherShowerdEdx;
-
+  TH1D* fMatchedNuHist;
+  TH2D* fShowerEvDiffLength;
+  TH2D* fEnuEeHist;
 
   /** Configuration parameters */
   art::InputTag fTruthTag;  //!< art tag for MCTruth information
   art::InputTag fTrackTag; //! <art tag for MCTrack information
   art::InputTag fShowerTag; //! <art tag for MCShower information
-  double fEnergyThreshold; //configurable parameter
-  double fVertexAssnDis;
 };
 
   }  // namespace SBNOsc
